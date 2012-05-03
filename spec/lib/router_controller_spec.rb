@@ -19,6 +19,10 @@ describe DogsController do
   end
 
   describe '.extract_action' do
+    it "recognizes the root" do
+      DogsController.extract_action('/').should == 'root'
+    end
+
     it "returns the option :as if declared" do
       DogsController.extract_action('lorem-ipsum', as: 'dolor-sit').should == 'dolor_sit'
     end

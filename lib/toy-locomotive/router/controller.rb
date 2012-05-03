@@ -39,7 +39,7 @@ module ToyLocomotive::Router::Controller
     end
 
     def extract_action path, opts={}
-      (opts[:as] || path).parameterize.underscore
+      (opts[:as] || (path == '/' ? 'root' : path)).parameterize.underscore
     end
 
     def extract_controller
