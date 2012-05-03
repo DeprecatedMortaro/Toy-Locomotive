@@ -1,81 +1,100 @@
 module ToyLocomotive::Router::Controller
 
-  def self.get path, opts={}, &blk
-    match_action "get", path, opts, blk
-  end
+  module ClassMethods
 
-  def self.match_action method, path, opts, blk
+    %w(get put post delete).each {|via| eval "def #{via} path, opts={}, &blk; match_action \"#{via}\", path, opts, blk; end"}
 
-    action = extract_action(path, opts)
-
-    extract_filter action, path, opts
-
-    path = extract_path(path, opts)
-    as = extract_as(path, opts)
-    controller = extract_controller
-
-    add_route method, action, path, as, controller
-    define_method action, &blk
-
-  end
-
-  def self.add_route method, action, path, as, controller
-    ToyLocomotive.routes ||= []
-    ToyLocomotive.routes << {method: method, action: action, path: path, controller: controller, as: as}
-  end
-
-  def self.extract_path path, opts
-    return path if path[0] == '/'
-    "#{extract_model.route_chain}#{opts[:on] == 'member' ? extract_model.to_route : ''}/#{path.parameterize}"
-  end
-
-  def self.extract_as path, opts
-    action = extract_action path, opts
-    path[0] == '/' ? action : "some chain #{action}"
-  end
-
-  def self.extract_action path, opts
-    opts[:as] || path.parameterize.underscore
-  end
-
-  def self.extract_controller
-    to_s.gsub('Controller', '').downcase
-  end
-
-  def self.extract_model
-    extract_controller.singularize.camelize.constantize
-  end
-
-  def extract_parent_vars
-    chain = self.class.extract_model.belongs_chain
-    if chain.any?
-      root = chain.pop
-      parent = root.find(params["#{root.to_s.underscore}_id"])
-      instance_variable_set "@#{root.to_s.underscore}", parent
-      chain.reverse!.each do |model|
-        parent = parent.send(model.to_s.underscore.pluralize).find(params["#{model.to_s.underscore}_id"])
-        instance_variable_set "@#{model.to_s.underscore}", parent
-      end
+    def match_action method, path, opts, blk
+      action = extract_action path, opts
+      extract_filter action, path, opts
+      path = extract_path path, opts
+      as = extract_as path, opts
+      controller = extract_controller
+      add_route method, action, path, as, controller
+      define_method action, blk
     end
+
+    def add_route method, action, path, as, controller
+      ToyLocomotive.routes ||= []
+      ToyLocomotive.routes << {method: method, action: action, path: path, controller: controller, as: as}
+    end
+
+    def add_member_filter action
+      @member_filters ||= []
+      @member_filters << action.to_sym
+    end
+
+    def add_collection_filter action
+      @collection_filters ||= []
+      @collection_filters << action.to_sym
+    end
+
+    def extract_path path, opts={}
+      path[0] == '/' ? path : "#{extract_model.route_chain}#{opts[:on] == 'member' ? extract_model.to_route : "/#{extract_model.to_s.underscore.pluralize}"}/#{path.parameterize}"
+    end
+
+    def extract_as path, opts={}
+      action = extract_action path, opts
+      path[0] == '/' ? action : "#{action}_#{extract_model.to_as}"
+    end
+
+    def extract_action path, opts={}
+      (opts[:as] || path).parameterize.underscore
+    end
+
+    def extract_controller
+      to_s.gsub('Controller', '').downcase
+    end
+
+    def extract_model
+      extract_controller.singularize.camelize.constantize
+    end
+
+    def extract_filter action, path, opts
+      return if path[0] == '/'
+      send :"add_#{opts[:on]}_filter", action
+    end
+
+    def append_filters!
+      before_filter :extract_parent_vars, only: ((@member_filters || []) + (@collection_filters || []))
+      before_filter :extract_member_var, only: (@member_filters || [])
+      before_filter :extract_collection_var, only: (@collection_filters || [])
+    end
+
   end
 
-  def extract_member_var
-    parent = instance_variable_get "@#{(model = self.class.extract_model).belongs_chain.reverse.pop.to_s.underscore}"
-    instance_variable_set "@#{model.to_s.underscore}", parent.send(model.to_s.underscore.pluralize).find(params["#{model.to_s.underscore}_id"])
-  end
+  module InstanceMethods
 
-  def extract_collection_var
-    parent = instance_variable_get "@#{(model = self.class.extract_model).belongs_chain.reverse.pop.to_s.underscore}"
-    instance_variable_set "@#{model.to_s.underscore.pluralize}", parent.send(model.to_s.underscore.pluralize)
-  end
+    def extract_parent_vars
+      chain = self.class.extract_model.belongs_chain
+      vars = []
+      if chain.any?
+        root = chain.pop
+        parent = root.find(params[root.to_params])
+        instance_variable_set root.to_member_var, parent
+        vars << parent
+        chain.reverse!.each do |model|
+          parent = parent.send(model.to_s.underscore.pluralize).find(params[model.to_params])
+          instance_variable_set root.to_member_var, parent
+          vars << parent
+        end
+      end
+      vars
+    end
 
-  def self.extract_filter action, path, opts
-    return if path[0] == '/'
-    before_filter :extract_parent_vars, only: action.to_sym
-    before_filter :extract_member_var, only: action.to_sym if opts[:on] == 'member'
-    before_filter :extract_collection_var, only: action.to_sym if opts[:on] == 'collection'
+    def extract_member_var
+      parent = instance_variable_get (model = self.class.extract_model).belongs_chain.reverse.pop.to_member_var
+      parent ? instance_variable_set(model.to_member_var, parent.send(model.to_s.underscore.pluralize).find(params[model.to_params])) : model.find(params[model.to_params])
+    end
+
+    def extract_collection_var
+      parent = instance_variable_get (model = self.class.extract_model).belongs_chain.reverse.pop.to_member_var
+      parent ? instance_variable_set(model.to_collection_var, parent.send(model.to_s.underscore.pluralize)) : model.all
+    end
+
   end
 
 end
 
-ActiveRecord::Base.send :include, ToyLocomotive::Router::Controller
+ActionController::Base.extend ToyLocomotive::Router::Controller::ClassMethods
+ActionController::Base.send :include, ToyLocomotive::Router::Controller::InstanceMethods

@@ -1,36 +1,40 @@
 module ToyLocomotive::Router::Model
 
-  def self.belongs_to_route
+  def belongs_to_route
     reflections = reflect_on_all_associations(:belongs_to)
     reflections.any? ? reflections.first.name.to_s.camelize.constantize : nil
   end
 
-  def self.belongs_chain chain=[]
+  def belongs_chain chain=[]
     parent_route = (chain.last || self).belongs_to_route
     parent_route ? belongs_chain(chain << parent_route) : chain
   end
 
-  def self.route_chain
+  def route_chain
     belongs_chain.reverse.map{|m| m.to_route}.join
   end
 
-  def self.to_route
+  def to_route
     s = to_s.parameterize.downcase
     "/#{s.pluralize}/:#{s}_id"
   end
 
-  def self.to_member_var
+  def to_member_var
     "@#{to_s.underscore}"
   end
 
-  def self.to_collection_var
+  def to_collection_var
     to_member_var.pluralize
   end
 
-  def self.to_params
+  def to_params
     :"#{to_s.underscore}_id"
+  end
+
+  def to_as
+    belongs_chain.reverse!.map{|m| m.to_s.underscore }.join('_') << (belongs_chain.empty? ? to_s.underscore : "_#{to_s.underscore}")
   end
 
 end
 
-ActiveRecord::Base.send :include, ToyLocomotive::Router::Model
+ActiveRecord::Base.extend ToyLocomotive::Router::Model
