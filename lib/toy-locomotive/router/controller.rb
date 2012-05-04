@@ -75,7 +75,7 @@ module ToyLocomotive::Router::Controller
         vars << parent
         chain.reverse!.each do |model|
           parent = parent.send(model.to_s.underscore.pluralize).find(params[model.to_params])
-          instance_variable_set root.to_member_var, parent
+          instance_variable_set model.to_member_var, parent
           vars << parent
         end
       end
