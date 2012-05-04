@@ -6,7 +6,7 @@ module ToyLocomotive
           require file
           const = file.split('/').last.split('.').first.classify.constantize.append_filters!
         end
-        BundaOfegante::Application.routes.draw do
+        Rails.application.class.routes.draw do
           ToyLocomotive.routes.each {|route| match route[:path] => "#{route[:controller]}##{route[:action]}", as: route[:as], via: route[:method]}
         end
       end
