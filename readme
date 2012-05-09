@@ -1,0 +1,15 @@
+TOY LOCOMOTIVE?!
+================
+
+Toy locomotive is a gem that runs over Rails....but Why?
+
+TO-DO
+=====
+
+* Better Documentation
+* Add models like data_mapper
+* Add a generator
+* Simplify folder structure
+* Block for extra routes
+* Basic crud
+* Lots more to make rails as simple as sinatra
