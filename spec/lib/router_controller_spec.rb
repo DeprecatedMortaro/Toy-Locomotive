@@ -68,4 +68,12 @@ describe DogsController do
     end
   end
 
+  describe 'resources' do
+    it "creates an index" do
+      DogsController.get('', on: 'collection') { 'index' }
+      DogsController.new.index.should == 'index'
+      DogsController.new.should respond_to(:alien_human_sites_path)
+    end
+  end
+
 end

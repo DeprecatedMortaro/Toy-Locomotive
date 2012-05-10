@@ -5,10 +5,10 @@ module ToyLocomotive::Router::Controller
     %w(get put post delete).each {|via| eval "def #{via} path, opts={}, &blk; match_action \"#{via}\", path, opts, blk; end"}
 
     def match_action method, path, opts, blk
-      action = extract_action path, opts
+      action = extract_action path, opts, method
       extract_filter action, path, opts
+      as = extract_as path, opts, method
       path = extract_path path, opts
-      as = extract_as path, opts
       controller = extract_controller
       add_route method, action, path, as, controller
       define_method action, blk
@@ -33,12 +33,14 @@ module ToyLocomotive::Router::Controller
       path[0] == '/' ? path : "#{extract_model.route_chain}#{opts[:on] == 'member' ? extract_model.to_route : "/#{extract_model.to_s.underscore.pluralize}"}/#{path.parameterize}"
     end
 
-    def extract_as path, opts={}
+    def extract_as path, opts={}, method='get'
+      return extract_model.to_as.pluralize if path == '' and method == 'get' and opts[:on] == 'collection'
       action = extract_action path, opts
       path[0] == '/' ? action : "#{action}_#{extract_model.to_as}"
     end
 
-    def extract_action path, opts={}
+    def extract_action path, opts={}, method='get'
+      return 'index' if path == '' and method == 'get' and opts[:on] == 'collection'
       (opts[:as] || (path == '/' ? 'root' : path)).parameterize.underscore
     end
 
