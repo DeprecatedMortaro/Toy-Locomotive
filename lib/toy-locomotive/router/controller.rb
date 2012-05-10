@@ -6,7 +6,6 @@ module ToyLocomotive::Router::Controller
 
     def match_action method, path, opts, blk
       action = extract_action path, opts, method
-      puts action + '+++++++++++++++++++++'
       extract_filter action, path, opts
       as = extract_as path, opts, method
       path = extract_path path, opts
@@ -18,6 +17,7 @@ module ToyLocomotive::Router::Controller
     def add_route method, action, path, as, controller
       ToyLocomotive.routes ||= []
       ToyLocomotive.routes << {method: method, action: action, path: path, controller: controller, as: as}
+      puts ({method: method, action: action, path: path, controller: controller, as: as}.inspect)
     end
 
     def add_member_filter action
