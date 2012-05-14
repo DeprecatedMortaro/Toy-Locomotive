@@ -62,6 +62,10 @@ module ToyLocomotive::Resources::Controller
       end
     end
 
+    def set_action_destroy
+
+    end
+
   end
 
 end
