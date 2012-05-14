@@ -39,17 +39,14 @@ module ToyLocomotive::Router::Controller
     end
 
     def extract_as path, opts={}, method='get'
-      return extract_model.to_as.pluralize if path == '' and method == 'get' and opts[:on] == 'collection'
-      return extract_model.to_as if path == '' and method == 'get' and opts[:on] == 'member'
+      return extract_model.to_as.pluralize if path == 'index'
+      return extract_model.to_as if path == 'show'
       return nil if method != 'get'
       action = extract_action path, opts
       path[0] == '/' ? action : "#{action}_#{extract_model.to_as}"
     end
 
     def extract_action path, opts={}, method='get'
-      #return 'update' if path == '' and method == 'put' and opts[:on] == 'member'
-      #return 'create' if path == '' and method == 'post'
-      #return 'destroy' if path == '' and method == 'delete'
       (opts[:as] || (path == '/' ? 'root' : path)).parameterize.underscore
     end
 
