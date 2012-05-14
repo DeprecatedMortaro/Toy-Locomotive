@@ -55,8 +55,7 @@ module ToyLocomotive::Resources::Controller
     def set_action_update
       put 'update' do
         extract_parent_vars
-        model = self.class.extract_model
-        member = instance_variable_get(model.to_member_var)
+        member = extract_member_var
         return redirect_to member, notice: 'Burrito was successfully updated.' if member.update_attributes(params[model.to_s.underscore.to_sym])
         render action: 'edit'
       end
