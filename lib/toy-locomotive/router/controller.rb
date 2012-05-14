@@ -6,7 +6,7 @@ module ToyLocomotive::Router::Controller
 
     def match_action method, path, opts, blk
       action = extract_action path, opts, method
-      extract_filter action, path, opts
+      extract_filter action, path, opts, method
       as = extract_as path, opts, method
       path = extract_path path, opts
       controller = extract_controller
@@ -31,17 +31,25 @@ module ToyLocomotive::Router::Controller
     end
 
     def extract_path path, opts={}
-      path[0] == '/' ? path : "#{extract_model.route_chain}#{opts[:on] == 'member' ? extract_model.to_route : "/#{extract_model.to_s.underscore.pluralize}"}/#{path.parameterize}"
+      return path if path[0] == '/'
+      return "#{extract_model.route_chain}#{extract_model.to_route}/#{path.parameterize}" if opts[:on] == 'member' || ['edit','new'].include?(path)
+      return "#{extract_model.route_chain}#{extract_model.to_route}" if ['show','update','destroy'].include?(path)
+      return "#{extract_model.route_chain}/#{extract_model.to_s.underscore.pluralize}" if ['create', 'index'].include?(path)
+      "#{extract_model.route_chain}/#{extract_model.to_s.underscore.pluralize}/#{path.parameterize}"
     end
 
     def extract_as path, opts={}, method='get'
       return extract_model.to_as.pluralize if path == '' and method == 'get' and opts[:on] == 'collection'
+      return extract_model.to_as if path == '' and method == 'get' and opts[:on] == 'member'
+      return nil if method != 'get'
       action = extract_action path, opts
       path[0] == '/' ? action : "#{action}_#{extract_model.to_as}"
     end
 
     def extract_action path, opts={}, method='get'
-      return 'index' if path == '' and method == 'get' and opts[:on] == 'collection'
+      #return 'update' if path == '' and method == 'put' and opts[:on] == 'member'
+      #return 'create' if path == '' and method == 'post'
+      #return 'destroy' if path == '' and method == 'delete'
       (opts[:as] || (path == '/' ? 'root' : path)).parameterize.underscore
     end
 
@@ -53,8 +61,9 @@ module ToyLocomotive::Router::Controller
       extract_controller.singularize.camelize.constantize
     end
 
-    def extract_filter action, path, opts
+    def extract_filter action, path, opts, method
       return if path[0] == '/'
+      return if %w(index show new edit destroy update create).include? path
       send :"add_#{opts[:on]}_filter", action
     end
 

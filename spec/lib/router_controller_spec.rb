@@ -69,9 +69,39 @@ describe DogsController do
   end
 
   describe 'resources' do
-    it "creates an index" do
-      DogsController.get('', on: 'collection') { 'index' }
+    it "gets an index" do
+      DogsController.get('index') { 'index' }
       DogsController.new.index.should == 'index'
+    end
+
+    it "gets a show" do
+      DogsController.get('show') { 'show' }
+      DogsController.new.show.should == 'show'
+    end
+
+    it "gets a new" do
+      DogsController.get('new') { 'new' }
+      DogsController.new.new.should == 'new'
+    end
+
+    it "gets a edit" do
+      DogsController.get('edit') { 'edit' }
+      DogsController.new.edit.should == 'edit'
+    end
+
+    it "puts a update" do
+      DogsController.put('update') { 'update' }
+      DogsController.new.update.should == 'update'
+    end
+
+    it "posts a create" do
+      DogsController.post('create') { 'create' }
+      DogsController.new.create.should == 'create'
+    end
+
+    it "deletes a destroy" do
+      DogsController.delete('destroy') { 'destroy' }
+      DogsController.new.destroy.should == 'destroy'
     end
   end
 
