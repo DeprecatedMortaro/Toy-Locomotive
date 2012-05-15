@@ -92,13 +92,15 @@ module ToyLocomotive::Router::Controller
     end
 
     def extract_member_var
-      parent = instance_variable_get (model = self.class.extract_model).belongs_chain.reverse.pop.to_member_var
-      parent ? instance_variable_set(model.to_member_var, parent.send(model.to_s.underscore.pluralize).find(params[model.to_params])) : model.find(params[model.to_params])
+      parent = (model = self.class.extract_model).belongs_chain.reverse.pop
+      parent = parent ? instance_variable_get(parent.to_member_var) : nil
+      instance_variable_set(model.to_collection_var, (parent ? parent.send(model.to_s.underscore.pluralize) : model).find(params[model.to_params]))
     end
 
     def extract_collection_var
-      parent = instance_variable_get (model = self.class.extract_model).belongs_chain.reverse.pop.to_member_var
-      parent ? instance_variable_set(model.to_collection_var, parent.send(model.to_s.underscore.pluralize)) : model.all
+      parent = (model = self.class.extract_model).belongs_chain.reverse.pop
+      parent = parent ? instance_variable_get(parent.to_member_var) : nil
+      instance_variable_set(model.to_collection_var, (parent ? parent.send(model.to_s.underscore.pluralize) : model.all))
     end
 
   end
