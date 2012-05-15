@@ -66,7 +66,7 @@ module ToyLocomotive::Resources::Controller
       delete 'destroy' do
         vars = extract_parent_vars
         extract_member_var.destroy
-        redirect_to vars, notice: 'Burrito was successfully deleted'
+        redirect_to action: :index, notice: 'Burrito was successfully deleted'
       end
     end
 
