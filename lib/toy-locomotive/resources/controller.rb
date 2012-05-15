@@ -63,7 +63,11 @@ module ToyLocomotive::Resources::Controller
     end
 
     def set_action_destroy
-
+      delete 'destroy' do
+        vars = extract_parent_vars
+        extract_member_var.destroy
+        redirect_to vars, notice: 'Burrito was successfully deleted'
+      end
     end
 
   end
