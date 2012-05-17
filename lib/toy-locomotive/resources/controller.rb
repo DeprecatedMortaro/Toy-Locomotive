@@ -45,7 +45,7 @@ module ToyLocomotive::Resources::Controller
       post 'create' do
         vars = extract_parent_vars
         parent = instance_variable_get (model = self.class.extract_model).belongs_chain.reverse.pop.to_member_var
-        member = (parent ? parent.send(model.to_s.underscore.pluralize) : model).new(params[model.to_params])
+        member = (parent ? parent.send(model.to_s.underscore.pluralize) : model).new(params[model.to_s.underscore.to_sym])
         instance_variable_set model.to_member_var, member
         vars = vars << member
         return redirect_to vars, notice: 'Burrito was successfully created.' if member.save
