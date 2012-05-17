@@ -1,0 +1,15 @@
+module ToyLocomotive::Attributes::Model
+  module ClassMethods
+
+    mattr_accessor :toy_attributes
+    self.toy_attributes = []
+
+    def attribute value
+      tattr = ToyLocomotive::Attributes::AttributeChain.new value, self
+      self.toy_attributes << tattr
+      tattr
+    end
+
+  end
+end
+ActiveRecord::Base.extend ToyLocomotive::Attributes::Model::ClassMethods

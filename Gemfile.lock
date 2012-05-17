@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    toy-locomotive (0.0.3)
+    toy-locomotive (0.0.4)
       rails
 
 GEM

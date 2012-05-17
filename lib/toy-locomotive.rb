@@ -5,6 +5,7 @@ module ToyLocomotive
 
   module Router; end
   module Resources; end
+  module Attributes; end
   mattr_accessor :routes
 
 end
@@ -12,4 +13,6 @@ end
 require "toy-locomotive/router/model"
 require "toy-locomotive/router/controller"
 require "toy-locomotive/resources/controller"
+require "toy-locomotive/attributes/chain"
+require "toy-locomotive/attributes/model"
 require "toy-locomotive/initializer"
