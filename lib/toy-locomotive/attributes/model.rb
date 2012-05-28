@@ -11,7 +11,7 @@ module ToyLocomotive::Attributes::Model
     end
 
     def attributes
-      toy_attributes.sellect{|a| a.parent == self}
+      toy_attributes.select{|a| a.parent == self}
     end
 
   end
