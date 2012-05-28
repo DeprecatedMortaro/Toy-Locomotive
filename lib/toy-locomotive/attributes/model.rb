@@ -10,6 +10,10 @@ module ToyLocomotive::Attributes::Model
       tattr
     end
 
+    def attributes
+      toy_attributes.sellect{|a| a.parent == self}
+    end
+
   end
 end
 ActiveRecord::Base.extend ToyLocomotive::Attributes::Model::ClassMethods
