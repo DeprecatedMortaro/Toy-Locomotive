@@ -11,6 +11,7 @@ module ToyLocomotive::Attributes
 
     def as value
       @_as = value
+      @parent.send @_as, @column if [:has_many, :has_and_belongs_to_many, :has_one, :belongs_to].include? @_as
       self
     end
 
@@ -28,6 +29,22 @@ module ToyLocomotive::Attributes
     def helper value
       @_helper = value
       self
+    end
+
+    def to_table_column
+      return nil if skip_table_column?
+      return :"#{@column}_id" if @_as == :belongs_to
+      @column
+    end
+
+    def to_table_type
+      return nil if skip_table_column?
+      return :integer if @_as == :belongs_to
+      @_as
+    end
+
+    def skip_table_column?
+      [:has_many, :has_and_belongs_to_many, :has_one].include? @_as
     end
 
     def to_helper

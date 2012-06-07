@@ -18,20 +18,21 @@ module ToyLocomotive
     end
 
     def set_attribute attribute
+      return if skip_table_column?
       add_attribute attribute
       update_attribute attribute
     end
 
     def add_attribute attribute
-      unless @model.column_names.include? attribute.column.to_s
-        Class.new(ActiveRecord::Migration).add_column @model.table_name.to_sym, attribute.column, attribute._as
+      unless @model.column_names.include? attribute.to_table_column.to_s
+        Class.new(ActiveRecord::Migration).add_column @model.table_name.to_sym, attribute.to_table_column, attribute.to_table_type
       end
     end
 
     def update_attribute attribute
-      column = @model.columns.select{|c| c.name == attribute.column.to_s}.first
-      if column && column.type != attribute._as
-        Class.new(ActiveRecord::Migration).change_column @model.table_name, attribute.column, attribute._as
+      column = @model.columns.select{|c| c.name == attribute.to_table_column.to_s}.first
+      if column && column.type != attribute.to_table_type
+        Class.new(ActiveRecord::Migration).change_column @model.table_name, attribute.to_table_column, attribute.to_table_type
       end
     end
 
