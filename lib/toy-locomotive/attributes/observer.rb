@@ -18,7 +18,7 @@ module ToyLocomotive
     end
 
     def set_attribute attribute
-      return if skip_table_column?
+      return if attribute.skip_table_column?
       add_attribute attribute
       update_attribute attribute
     end
