@@ -13,7 +13,7 @@ module ToyLocomotive::Router::Controller
     end
 
     def route_chain
-      belongs_chain.reverse.map{|m| m.to_route}.join
+      belongs_chain.map{|m| m.to_route}.join
     end
 
     def match_action method, path, opts, blk
