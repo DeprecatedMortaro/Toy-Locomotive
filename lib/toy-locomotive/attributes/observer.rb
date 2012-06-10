@@ -13,6 +13,7 @@ module ToyLocomotive
       @model.attributes.each do |attribute|
         set_attribute(attribute)
         @model.attr_accessible attribute.column
+        @model.attr_accessible :"#{attribute.column}_id" if attribute._as == :belongs_to
       end
       @model.reset_column_information
     end
