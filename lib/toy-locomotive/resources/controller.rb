@@ -14,8 +14,8 @@ module ToyLocomotive::Resources::Controller
 
     def set_action_new
       get 'new' do
-        extract_parent_vars
-        parent = instance_variable_get (model = self.class.extract_model).belongs_chain.reverse.pop.to_member_var
+        parent = extract_parent_vars.last
+        model = self.class.extract_model
         instance_variable_set model.to_member_var, (parent ? parent.send(model.to_s.underscore.pluralize) : model).new
       end
     end
@@ -43,8 +43,8 @@ module ToyLocomotive::Resources::Controller
 
     def set_action_create
       post 'create' do
-        vars = extract_parent_vars
-        parent = instance_variable_get (model = self.class.extract_model).belongs_chain.reverse.pop.to_member_var
+        parent = (vars = extract_parent_vars).last
+        model = self.class.extract_model
         member = (parent ? parent.send(model.to_s.underscore.pluralize) : model).new(params[model.to_s.underscore.to_sym])
         instance_variable_set model.to_member_var, member
         vars = vars << member

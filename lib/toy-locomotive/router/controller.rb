@@ -16,6 +16,10 @@ module ToyLocomotive::Router::Controller
       belongs_chain.map{|m| m.to_route}.join
     end
 
+    def route_as
+      belongs_chain.map{|m| m.to_s.underscore }.join('_') << (belongs_chain.empty? ? to_s.underscore : "_#{to_s.underscore}")
+    end
+
     def match_action method, path, opts, blk
       action = extract_action path, opts, method
       extract_filter action, path, opts, method
@@ -51,11 +55,11 @@ module ToyLocomotive::Router::Controller
     end
 
     def extract_as path, opts={}, method='get'
-      return extract_model.to_as.pluralize if path == 'index'
-      return extract_model.to_as if path == 'show'
+      return route_as.pluralize if path == 'index'
+      return route_as if path == 'show'
       return nil if method != 'get'
       action = extract_action path, opts
-      path[0] == '/' ? action : "#{action}_#{extract_model.to_as}"
+      path[0] == '/' ? action : "#{action}_#{route_as}"
     end
 
     def extract_action path, opts={}, method='get'
