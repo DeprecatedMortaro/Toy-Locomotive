@@ -87,32 +87,34 @@ module ToyLocomotive::Router::Controller
   module InstanceMethods
 
     def extract_parent_vars
-      #chain = belongs_chain.clone
-      #vars = []
-      #if chain.any?
-      #  root = chain.pop
-      #  parent = root.find(params[root.to_params])
-      #  instance_variable_set root.to_member_var, parent
-      #  vars << parent
-      #  chain.reverse!.each do |model|
-      #    parent = parent.send(model.to_s.underscore.pluralize).find(params[model.to_params])
-      #    instance_variable_set model.to_member_var, parent
-      #    vars << parent
-      #  end
-      #end
-      #vars
+      chain = self.class.belongs_chain.clone
+      vars = []
+      if chain.any?
+        root = chain.pop
+        parent = root.find(params[root.to_params])
+        instance_variable_set root.to_member_var, parent
+        vars << parent
+        chain.each do |model|
+          parent = parent.send(model.to_s.underscore.pluralize).find(params[model.to_params])
+          instance_variable_set model.to_member_var, parent
+          vars << parent
+        end
+      end
+      vars
     end
 
     def extract_member_var
-      #parent = (model = self.class.extract_model).belongs_chain.reverse.pop
-      #parent = parent ? instance_variable_get(parent.to_member_var) : nil
-      #instance_variable_set(model.to_member_var, (parent ? parent.send(model.to_s.underscore.pluralize) : model).find(params[model.to_params]))
+      parent = self.class.belongs_chain.reverse.pop
+      model = self.class.extract_model
+      parent = parent ? instance_variable_get(parent.to_member_var) : nil
+      instance_variable_set(model.to_member_var, (parent ? parent.send(model.to_s.underscore.pluralize) : model).find(params[model.to_params]))
     end
 
     def extract_collection_var
-      #parent = (model = self.class.extract_model).belongs_chain.reverse.pop
-      #parent = parent ? instance_variable_get(parent.to_member_var) : nil
-      #instance_variable_set(model.to_collection_var, (parent ? parent.send(model.to_s.underscore.pluralize) : model.all))
+      parent = self.class.belongs_chain.reverse.pop
+      model = self.class.extract_model
+      parent = parent ? instance_variable_get(parent.to_member_var) : nil
+      instance_variable_set(model.to_collection_var, (parent ? parent.send(model.to_s.underscore.pluralize) : model.all))
     end
 
   end
