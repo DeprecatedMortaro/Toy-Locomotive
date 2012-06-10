@@ -17,7 +17,7 @@ module ToyLocomotive::Router::Controller
     end
 
     def route_as
-      belongs_chain.map{|m| m.to_s.underscore }.join('_') << (belongs_chain.empty? ? to_s.underscore : "_#{to_s.underscore}")
+      belongs_chain.map{|m| m.to_s.underscore }.join('_') << (belongs_chain.empty? ? extract_model.to_s.underscore : "_#{extract_model.to_s.underscore}")
     end
 
     def match_action method, path, opts, blk
