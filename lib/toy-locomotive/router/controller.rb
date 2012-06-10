@@ -4,6 +4,18 @@ module ToyLocomotive::Router::Controller
 
     %w(get put post delete).each {|via| eval "def #{via} path, opts={}, &blk; match_action \"#{via}\", path, opts, blk; end"}
 
+    def nested *args
+      @_nested = *args
+    end
+
+    def belongs_chain
+      @_nested.map{|m| m.classify.constantize}
+    end
+
+    def route_chain
+      belongs_chain.reverse.map{|m| m.to_route}.join
+    end
+
     def match_action method, path, opts, blk
       action = extract_action path, opts, method
       extract_filter action, path, opts, method
@@ -32,10 +44,10 @@ module ToyLocomotive::Router::Controller
 
     def extract_path path, opts={}
       return path if path[0] == '/'
-      return "#{extract_model.route_chain}#{extract_model.to_route}/#{path.parameterize}" if opts[:on] == 'member' || path == 'edit'
-      return "#{extract_model.route_chain}#{extract_model.to_route}" if ['show','update','destroy'].include?(path)
-      return "#{extract_model.route_chain}/#{extract_model.to_s.underscore.pluralize}" if ['create', 'index'].include?(path)
-      "#{extract_model.route_chain}/#{extract_model.to_s.underscore.pluralize}/#{path.parameterize}"
+      return "#{route_chain}#{extract_model.to_route}/#{path.parameterize}" if opts[:on] == 'member' || path == 'edit'
+      return "#{route_chain}#{extract_model.to_route}" if ['show','update','destroy'].include?(path)
+      return "#{route_chain}/#{extract_model.to_s.underscore.pluralize}" if ['create', 'index'].include?(path)
+      "#{route_chain}/#{extract_model.to_s.underscore.pluralize}/#{path.parameterize}"
     end
 
     def extract_as path, opts={}, method='get'
@@ -75,32 +87,32 @@ module ToyLocomotive::Router::Controller
   module InstanceMethods
 
     def extract_parent_vars
-      chain = self.class.extract_model.belongs_chain
-      vars = []
-      if chain.any?
-        root = chain.pop
-        parent = root.find(params[root.to_params])
-        instance_variable_set root.to_member_var, parent
-        vars << parent
-        chain.reverse!.each do |model|
-          parent = parent.send(model.to_s.underscore.pluralize).find(params[model.to_params])
-          instance_variable_set model.to_member_var, parent
-          vars << parent
-        end
-      end
-      vars
+      #chain = belongs_chain.clone
+      #vars = []
+      #if chain.any?
+      #  root = chain.pop
+      #  parent = root.find(params[root.to_params])
+      #  instance_variable_set root.to_member_var, parent
+      #  vars << parent
+      #  chain.reverse!.each do |model|
+      #    parent = parent.send(model.to_s.underscore.pluralize).find(params[model.to_params])
+      #    instance_variable_set model.to_member_var, parent
+      #    vars << parent
+      #  end
+      #end
+      #vars
     end
 
     def extract_member_var
-      parent = (model = self.class.extract_model).belongs_chain.reverse.pop
-      parent = parent ? instance_variable_get(parent.to_member_var) : nil
-      instance_variable_set(model.to_member_var, (parent ? parent.send(model.to_s.underscore.pluralize) : model).find(params[model.to_params]))
+      #parent = (model = self.class.extract_model).belongs_chain.reverse.pop
+      #parent = parent ? instance_variable_get(parent.to_member_var) : nil
+      #instance_variable_set(model.to_member_var, (parent ? parent.send(model.to_s.underscore.pluralize) : model).find(params[model.to_params]))
     end
 
     def extract_collection_var
-      parent = (model = self.class.extract_model).belongs_chain.reverse.pop
-      parent = parent ? instance_variable_get(parent.to_member_var) : nil
-      instance_variable_set(model.to_collection_var, (parent ? parent.send(model.to_s.underscore.pluralize) : model.all))
+      #parent = (model = self.class.extract_model).belongs_chain.reverse.pop
+      #parent = parent ? instance_variable_get(parent.to_member_var) : nil
+      #instance_variable_set(model.to_collection_var, (parent ? parent.send(model.to_s.underscore.pluralize) : model.all))
     end
 
   end
