@@ -9,7 +9,7 @@ module ToyLocomotive::Router::Controller
     end
 
     def belongs_chain
-      @_nested.map{|m| m.to_s.classify.constantize}
+      (@_nested || []).map{|m| m.to_s.classify.constantize}
     end
 
     def route_chain
