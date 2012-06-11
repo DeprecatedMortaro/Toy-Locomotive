@@ -14,6 +14,10 @@ module ToyLocomotive::Attributes::Model
       toy_attributes.select{|a| a.parent == self}
     end
 
+    def use_toy_attributes?
+      true
+    end
+
   end
 end
 ActiveRecord::Base.extend ToyLocomotive::Attributes::Model::ClassMethods

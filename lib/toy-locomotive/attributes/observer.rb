@@ -4,6 +4,7 @@ module ToyLocomotive
     attr_accessor :attribute
 
     def initialize model
+      return unless model.respond_to?(:use_toy_attributes?) && model.use_toy_attributes?
       @model = model
       unless ActiveRecord::Base.connection.table_exists? @model.table_name
         Class.new(ActiveRecord::Migration).create_table(@model.table_name.to_sym) do |t|
