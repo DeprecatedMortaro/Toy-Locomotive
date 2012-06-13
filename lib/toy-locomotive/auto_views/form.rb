@@ -5,12 +5,13 @@ module ToyLocomotive::AutoViews
       klass = arg.class
       html = ''
       klass.attributes.each do |attr|
+        next if attr.skip_table_column?
         if attr.to_helper == :hidden_field
-          html += f.send :hidden_field, attr.column
+          html += f.send :hidden_field, attr.to_table_column
         else
           html += "<fieldset>"
-          html += f.label attr.column
-          html += f.send attr.to_helper, attr.column
+          html += f.label attr.to_table_column
+          html += f.send attr.to_helper, attr.to_table_column
           html += "</fieldset>"
         end
       end

@@ -50,7 +50,7 @@ module ToyLocomotive::Attributes
     def to_helper
       return @_helper if @_helper
       return :text_area if @_as == :text
-      return :hidden_field if @column == :id || @column.to_s[-3..-1] == '_id'
+      return :hidden_field if @column == :id || @_as == :belongs_to
       return :check_box if @column == :id || @_as == :boolean
       :text_field
     end
