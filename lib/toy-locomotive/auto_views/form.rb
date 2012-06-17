@@ -9,9 +9,14 @@ module ToyLocomotive::AutoViews
         if attr.to_helper == :hidden_field
           html += f.send :hidden_field, attr.to_table_column
         else
-          html += "<fieldset>"
-          html += f.label attr.to_table_column
-          html += f.send attr.to_helper, attr.to_table_column
+          html += "<fieldset class=\"#{attr.to_table_column}\">"
+          if attr.to_helper == :check_box
+            html += f.send attr.to_helper, attr.to_table_column
+            html += f.label attr.to_table_column
+          else
+            html += f.label attr.to_table_column
+            html += f.send attr.to_helper, attr.to_table_column
+          end
           html += "</fieldset>"
         end
       end

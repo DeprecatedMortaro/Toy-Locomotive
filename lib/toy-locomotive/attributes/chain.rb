@@ -51,7 +51,8 @@ module ToyLocomotive::Attributes
       return @_helper if @_helper
       return :text_area if @_as == :text
       return :hidden_field if @column == :id || @_as == :belongs_to
-      return :check_box if @column == :id || @_as == :boolean
+      return :check_box if @_as == :boolean
+      return :select_date if @_as == :date
       :text_field
     end
 
