@@ -91,7 +91,7 @@ module ToyLocomotive::Router::Controller
   module InstanceMethods
 
     def extract_parent_vars
-      chain = self.class.belongs_chain.clone
+      chain = self.class.belongs_chain.reverse.clone
       vars = []
       if chain.any?
         root = chain.pop
@@ -108,14 +108,14 @@ module ToyLocomotive::Router::Controller
     end
 
     def extract_member_var
-      parent = self.class.belongs_chain.reverse.pop
+      parent = self.class.belongs_chain.pop#reverse.pop
       model = self.class.extract_model
       parent = parent ? instance_variable_get(parent.to_member_var) : nil
       instance_variable_set(model.to_member_var, (parent ? parent.send(model.to_s.underscore.pluralize) : model).find(params[model.to_params]))
     end
 
     def extract_collection_var
-      parent = self.class.belongs_chain.reverse.pop
+      parent = self.class.belongs_chain.pop#reverse.pop
       model = self.class.extract_model
       parent = parent ? instance_variable_get(parent.to_member_var) : nil
       instance_variable_set(model.to_collection_var, (parent ? parent.send(model.to_s.underscore.pluralize) : model.all))
