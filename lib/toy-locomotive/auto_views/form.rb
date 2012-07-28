@@ -17,7 +17,7 @@ module ToyLocomotive::AutoViews
           if attr.to_helper == :check_box
             html += f.send attr.to_helper, attr.to_table_column
             html += f.label attr.to_table_column
-          if attr.to_helper == :select
+          elsif attr.to_helper == :select
             html += f.label attr.to_table_column
             html += f.send attr.to_helper, attr.to_table_column, attr.options
           else
