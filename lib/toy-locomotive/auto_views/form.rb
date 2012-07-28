@@ -19,7 +19,7 @@ module ToyLocomotive::AutoViews
             html += f.label attr.to_table_column
           else
             html += f.label attr.to_table_column
-            html += f.send attr.to_helper, attr.to_table_column
+            html += f.send attr.to_helper, attr.to_table_column, attr.options
           end
           html += "</fieldset>"
         end

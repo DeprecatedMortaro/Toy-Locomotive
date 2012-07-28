@@ -13,7 +13,7 @@ module ToyLocomotive
       end
       Rails.application.class.routes.draw do
         ToyLocomotive.routes.each {|route| match route[:path] => "#{route[:controller]}##{route[:action]}", as: route[:as], via: route[:method]}
-        controllers.each {|controller| controller._route.call if controller._route}
+      #  controllers.each {|controller| controller._route.call if controller._route}
       end
     end
   end

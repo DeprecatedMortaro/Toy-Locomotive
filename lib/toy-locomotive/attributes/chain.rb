@@ -1,7 +1,7 @@
 module ToyLocomotive::Attributes
   class AttributeChain
 
-    attr_accessor :column, :parent, :_as, :_helper
+    attr_accessor :column, :parent, :_as, :_helper, :options
 
     def initialize column, parent
       @column = column
@@ -13,6 +13,10 @@ module ToyLocomotive::Attributes
       @_as = value
       @parent.send @_as, @column if [:has_many, :has_and_belongs_to_many, :has_one, :belongs_to].include? @_as
       self
+    end
+
+    def options value
+      @options = options
     end
 
     def presence bool
