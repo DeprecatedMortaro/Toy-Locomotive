@@ -1,7 +1,7 @@
 module ToyLocomotive::Attributes
   class AttributeChain
 
-    attr_accessor :column, :parent, :_as, :_helper, :options
+    attr_accessor :column, :parent, :_as, :_helper, :_options
 
     def initialize column, parent
       @column = column
@@ -15,8 +15,9 @@ module ToyLocomotive::Attributes
       self
     end
 
-    def options value
-      @options = options
+    def options value=nil
+      @_options = options if value
+      @_options
     end
 
     def presence bool
