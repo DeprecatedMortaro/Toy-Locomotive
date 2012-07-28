@@ -16,7 +16,7 @@ module ToyLocomotive::Attributes
     end
 
     def options *args
-      return @_options = args.first if args.any? && args.first.is_a? Array
+      return @_options = args.first if args.any? && args.first.is_a?(Array)
       return @_options = args if args.any?
       @_options
     end
