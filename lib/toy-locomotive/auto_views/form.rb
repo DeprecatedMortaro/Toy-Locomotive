@@ -19,7 +19,7 @@ module ToyLocomotive::AutoViews
             html += f.label attr.to_table_column
           elsif attr.to_helper == :select
             html += f.label attr.to_table_column
-            html += f.send attr.to_helper, attr.to_table_column, attr.options
+            html += f.send attr.to_helper, attr.to_table_column, attr._options
           else
             html += f.label attr.to_table_column
             html += f.send attr.to_helper, attr.to_table_column
