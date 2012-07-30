@@ -1,9 +1,9 @@
 module ToyLocomotive::Router::Block
 
-  mattr_accessor :_route
+  mattr_accessor :_routes
 
-  def route &block
-    @_route = block
+  def route *args
+    (@_routes ||= []).push args
   end
 
 end
