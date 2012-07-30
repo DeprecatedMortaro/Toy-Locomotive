@@ -16,7 +16,7 @@ module ToyLocomotive
         controllers.each {|controller| controller._routes.each {|route| send *route} if controller._routes.is_a?(Array)}
         puts "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
         controllers.each do |controller| 
-          puts controller.inspect
+          puts controller._routes.inspect
           puts "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
         end
       end
