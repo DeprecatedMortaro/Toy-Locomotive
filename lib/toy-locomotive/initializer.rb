@@ -15,8 +15,10 @@ module ToyLocomotive
         ToyLocomotive.routes.each {|route| match route[:path] => "#{route[:controller]}##{route[:action]}", as: route[:as], via: route[:method]}
         controllers.each {|controller| controller._routes.each {|route| send *route} if controller._routes.is_a?(Array)}
         puts "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-        puts controllers.inspect
-        puts "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+        controllers.each do |controller| 
+          puts controller.inspect
+          puts "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+        end
       end
     end
   end
