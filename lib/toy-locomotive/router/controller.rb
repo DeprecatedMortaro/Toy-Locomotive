@@ -77,7 +77,7 @@ module ToyLocomotive::Router::Controller
     def extract_filter action, path, opts, method
       return if path[0] == '/'
       return if %w(index show new edit destroy update create).include? path
-      send :"add_#{opts[:on]}_filter", action
+      send :"add_#{opts[:on]}_filter", action if opts[:on]
     end
 
     def append_filters!
