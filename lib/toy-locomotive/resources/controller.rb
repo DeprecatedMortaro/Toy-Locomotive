@@ -20,10 +20,10 @@ module ToyLocomotive::Resources::Controller
 
     def resources *args
       res = extract_resources(args)
-      res[:crud].each{|action| send :"set_action_#{action}"}
-      res[:member].each{|action| set_member_action(action)}
-      res[:collection].each{|action| set_collection_action(action)}
-      res[:static].each{|action| set_static_action(action)}
+      res[:crud].each{|action| send :"set_action_#{action}"} if res[:crud]
+      res[:member].each{|action| set_member_action(action)} if res[:member]
+      res[:collection].each{|action| set_collection_action(action)} if res[:collection]
+      res[:static].each{|action| set_static_action(action)} if res[:static]
     end
 
     def set_static_action action
