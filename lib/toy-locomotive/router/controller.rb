@@ -9,7 +9,7 @@ module ToyLocomotive::Router::Controller
     end
 
     def belongs_chain
-      (@_nested || []).map{|m| m.to_s.classify.constantize}
+      (@_nested || []).map{|m| m.to_s.classify.constantiz}
     end
 
     def route_chain
@@ -17,6 +17,7 @@ module ToyLocomotive::Router::Controller
     end
 
     def route_as
+      return "" unless extract_model
       belongs_chain.map{|m| m.to_s.underscore }.join('_') << (belongs_chain.empty? ? extract_model.to_s.underscore : "_#{extract_model.to_s.underscore}")
     end
 
@@ -51,7 +52,7 @@ module ToyLocomotive::Router::Controller
       return "#{route_chain}#{extract_model.to_route}/#{path.parameterize}" if opts[:on] == 'member' || path == 'edit'
       return "#{route_chain}#{extract_model.to_route}" if ['show','update','destroy'].include?(path)
       return "#{route_chain}/#{extract_model.to_s.underscore.pluralize}" if ['create', 'index'].include?(path)
-      #"#{route_chain}/#{extract_model.to_s.underscore.pluralize}/#{path.parameterize}"
+      "#{route_chain}/#{extract_model.to_s.underscore.pluralize}/#{path.parameterize}"
     end
 
     def extract_as path, opts={}, method='get'
@@ -71,7 +72,7 @@ module ToyLocomotive::Router::Controller
     end
 
     def extract_model
-      extract_controller.singularize.camelize.constantize
+      extract_controller.singularize.camelize.constantize rescue nil
     end
 
     def extract_filter action, path, opts, method
