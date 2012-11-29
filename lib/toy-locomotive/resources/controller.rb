@@ -27,14 +27,15 @@ module ToyLocomotive::Resources::Controller
     end
 
     def set_static_action action
+      get action do end
     end
 
     def set_member_action action
-
+      get action, on: 'member' do end
     end
 
     def set_collection_action action
-
+      get action, on: 'collection' do end
     end
 
     def set_action_new
