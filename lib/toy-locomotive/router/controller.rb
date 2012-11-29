@@ -53,6 +53,7 @@ module ToyLocomotive::Router::Controller
       return "#{route_chain}#{extract_model.to_route}/#{path.parameterize}" if opts[:on] == 'member' || path == 'edit'
       return "#{route_chain}#{extract_model.to_route}" if ['show','update','destroy'].include?(path)
       return "#{route_chain}/#{extract_model.to_s.underscore.pluralize}" if ['create', 'index'].include?(path)
+      return "/#{path.to_s.parameterize}" unless extract_model
       "#{route_chain}/#{extract_model.to_s.underscore.pluralize}/#{path.parameterize}"
     end
 
