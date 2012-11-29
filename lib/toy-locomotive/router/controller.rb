@@ -63,6 +63,7 @@ module ToyLocomotive::Router::Controller
       action = extract_action path, opts
       as = path[0] == '/' ? action : "#{action}"
       as << "_#{route_as}" if extract_model
+      as
     end
 
     def extract_action path, opts={}, method='get'
