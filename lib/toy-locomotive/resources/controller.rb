@@ -2,14 +2,39 @@ module ToyLocomotive::Resources::Controller
 
   module ClassMethods
     def extract_resources args
-      actions = [:index, :new, :create, :show, :edit, :update, :destroy]
-      return actions if args == :all
-      return args[:only] if args[:only]
-      actions - args[:except]
+      actions = {}
+      crud = [:index, :new, :create, :show, :edit, :update, :destroy]
+      if args.first == :all
+        actions[:crud] << crud
+        hash = args.last
+      else
+        hash = args.first
+      end
+      actions[:crud] = hash[:only] if hash[:only]
+      actions[:crud] = crud - hash[:except] if hash[:except]
+      actions[:member] = hash[:member]
+      actions[:collection] = hash[:collection]
+      actions[:static] = hash[:static]
+      actions
     end
 
-    def resources args
-      extract_resources(args).each{|action| send :"set_action_#{action}"}
+    def resources *args
+      res = extract_resources(args)
+      res[:crud].each{|action| send :"set_action_#{action}"}
+      res[:member].each{|action| set_member_action(action)}
+      res[:collection].each{|action| set_collection_action(action)}
+      res[:static].each{|action| set_static_action(action)}
+    end
+
+    def set_static_action action
+    end
+
+    def set_member_action action
+
+    end
+
+    def set_collection_action action
+
     end
 
     def set_action_new
