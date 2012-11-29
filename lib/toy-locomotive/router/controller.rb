@@ -48,6 +48,7 @@ module ToyLocomotive::Router::Controller
     end
 
     def extract_path path, opts={}
+      return '/' if path == 'root'
       return path if path[0] == '/'
       return "#{route_chain}#{extract_model.to_route}/#{path.parameterize}" if opts[:on] == 'member' || path == 'edit'
       return "#{route_chain}#{extract_model.to_route}" if ['show','update','destroy'].include?(path)
@@ -60,7 +61,8 @@ module ToyLocomotive::Router::Controller
       return route_as if path == 'show'
       return nil if method != 'get'
       action = extract_action path, opts
-      path[0] == '/' ? action : "#{action}_#{route_as}"
+      as = path[0] == '/' ? action : "#{action}"
+      as << "_#{route_as}" if extract_model
     end
 
     def extract_action path, opts={}, method='get'
