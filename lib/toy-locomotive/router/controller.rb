@@ -47,10 +47,10 @@ module ToyLocomotive::Router::Controller
       @collection_filters << action.to_sym
     end
 
-    def extract_path path, opts={on: 'static'}
+    def extract_path path, opts={}
       return '/' if path == 'root'
       return path if path[0] == '/'
-      return "/#{path.to_s.parameterize}" unless opts[:on] == 'static'
+      return "/#{path.to_s.parameterize}" #unless extract_model
       return "#{route_chain}#{extract_model.to_route}/#{path.parameterize}" if opts[:on] == 'member' || path == 'edit'
       return "#{route_chain}#{extract_model.to_route}" if ['show','update','destroy'].include?(path)
       return "#{route_chain}/#{extract_model.to_s.underscore.pluralize}" if ['create', 'index'].include?(path)
