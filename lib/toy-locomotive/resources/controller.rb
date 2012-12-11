@@ -5,7 +5,7 @@ module ToyLocomotive::Resources::Controller
       actions = {}
       crud = [:index, :new, :create, :show, :edit, :update, :destroy]
       if args.first == :all
-        actions[:crud] << crud
+        actions[:crud] = crud
         hash = args.last
       else
         hash = args.first
