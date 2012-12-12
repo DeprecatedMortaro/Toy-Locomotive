@@ -8,8 +8,7 @@ module ToyLocomotive::Resources::Controller
         actions[:crud] = crud
         args.shift
       end
-      hash = args || {}
-      puts hash.inspect+"\n\n"
+      hash = args.last || {}
       actions[:crud] = hash[:only] if hash[:only]
       actions[:crud] = crud - hash[:except] if hash[:except]
       actions[:member] = hash[:member]
