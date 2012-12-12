@@ -10,7 +10,7 @@ module ToyLocomotive::Resources::Controller
       else
         hash = args
       end
-      #actions[:crud] = hash[:only] if hash[:only]
+      actions[:crud] = hash[:only] if hash[:only]
       #actions[:crud] = crud - hash[:except] if hash[:except]
       #actions[:member] = hash[:member]
       #actions[:collection] = hash[:collection]
