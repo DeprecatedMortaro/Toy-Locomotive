@@ -6,16 +6,14 @@ module ToyLocomotive::Resources::Controller
       crud = [:index, :new, :create, :show, :edit, :update, :destroy]
       if args.first == :all
         actions[:crud] = crud
-        hash = args.last
-      else
-        hash = args
+        args.shift
       end
-      puts hash.inspect+"\n\n\n"
+      hash = args
       actions[:crud] = hash[:only] if hash[:only]
-      #actions[:crud] = crud - hash[:except] if hash[:except]
-      #actions[:member] = hash[:member]
-      #actions[:collection] = hash[:collection]
-      #actions[:static] = hash[:static]
+      actions[:crud] = crud - hash[:except] if hash[:except]
+      actions[:member] = hash[:member]
+      actions[:collection] = hash[:collection]
+      actions[:static] = hash[:static]
       actions
     end
 
