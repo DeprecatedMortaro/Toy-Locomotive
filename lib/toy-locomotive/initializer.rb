@@ -12,8 +12,8 @@ module ToyLocomotive
         controllers.last.append_filters!
       end
       Rails.application.class.routes.draw do
-        ToyLocomotive.routes.each {|route| match route[:path] => "#{route[:controller]}##{route[:action]}", as: route[:as], via: route[:method]}
         controllers.each {|controller| controller.draws.each {|draw| send *draw}}
+        ToyLocomotive.routes.each {|route| match route[:path] => "#{route[:controller]}##{route[:action]}", as: route[:as], via: route[:method]}
       end
     end
   end
