@@ -58,9 +58,9 @@ module ToyLocomotive::Router::Controller
     end
 
     def extract_as path, opts={}, method='get'
-      return route_as.pluralize if path == 'index'
-      return route_as if path == 'show'
-      return nil if method != 'get'
+      return route_as.pluralize if path == 'index' || path == 'create'
+      return route_as if path == 'show' || path == 'update' || path == 'destroy'
+      #return nil if method != 'get'
       action = extract_action path, opts
       as = path[0] == '/' ? action : "#{action}"
       as << "_#{route_as}" if extract_model
