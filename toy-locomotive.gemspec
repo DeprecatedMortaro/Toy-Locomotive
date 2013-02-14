@@ -7,11 +7,11 @@ require "toy-locomotive/version"
 Gem::Specification.new do |s|
   s.name        = "toy-locomotive"
   s.version     = ToyLocomotive::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of ToyLocomotive."
-  s.description = "TODO: Description of ToyLocomotive."
+  s.authors     = ["Christian Mortaro"]
+  s.email       = ["christian@mortaro.me"]
+  s.homepage    = "https://github.com/Mortaro/Toy-Locomotive"
+  s.summary     = "A Locomotive full of inovations running on Rails."
+  s.description = "Uses its submodules to add new behaviors on Rails."
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
 
